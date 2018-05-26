@@ -11,7 +11,7 @@ for (arg of process.argv) log.info(arg);
 log.debug('mysqlInitConfig', mysqlInitConfig);
 log.debug('mysqlConfig', mysqlConfig);
 
-const query = `show databases like '${ dbName }'`;
+const query = `SHOW DATABASES LIKE '${ dbName }'`;
 
 knex.raw(query)
     .then(result => {
@@ -35,23 +35,23 @@ knex.raw(query)
 
 function dropDb() {
 
-    const action = 'drop database';
-    const query = `${ action } if exists ${ dbName }`;
+    const action = 'DROP DATABASE';
+    const query = `${ action } IF EXISTS ${ dbName }`;
     log.debug(query);
 
     return knex.raw(query)
-        .then(() => log.info(`${ action } success`));
+        .then(() => log.info(`${ action.toLowerCase() } success`));
 
 }
 
 function createDb() {
 
-    const action = 'create database';
-    const query = `${ action } if not exists ${ dbName }`;
+    const action = 'CREATE DATABASE';
+    const query = `${ action } IF NOT EXISTS ${ dbName }`;
     log.debug(query);
 
     return knex.raw(query)
-        .then(() => log.info(`${ action } success`));
+        .then(() => log.info(`${ action.toLowerCase() } success`));
 
 }
 
