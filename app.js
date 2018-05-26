@@ -1,0 +1,1 @@
+console.log('see scripts in ./db folder to init database and tables');
