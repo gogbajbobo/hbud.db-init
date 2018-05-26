@@ -1,0 +1,12 @@
+{
+  "name": "hbud.db-init",
+  "version": "0.1.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Maxim Grigoriev <grigoriev.maxim@gmail.com>",
+  "license": "MIT"
+}
