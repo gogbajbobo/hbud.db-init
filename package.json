@@ -8,5 +8,8 @@
   },
   "keywords": [],
   "author": "Maxim Grigoriev <grigoriev.maxim@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "nconf": "^0.10.0"
+  }
 }
