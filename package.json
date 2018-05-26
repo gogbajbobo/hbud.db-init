@@ -10,6 +10,8 @@
   "author": "Maxim Grigoriev <grigoriev.maxim@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "knex": "^0.14.6",
+    "mysql": "^2.15.0",
     "nconf": "^0.10.0"
   }
 }
