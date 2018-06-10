@@ -42,6 +42,8 @@ if (!process.argv[2]) {
     dropTableQueries.forEach(queryChaining);
     createTableQueries.forEach(queryChaining);
 
+    queriesPromise = queriesPromise.then(() => fillRolesTableQuery());
+
     queriesPromise
         .then(() => log.info('tables created'))
         .catch(err => log.error(err.message))
@@ -109,6 +111,13 @@ function createRolesTableQuery() {
         polishTable(table);
 
     })
+
+}
+
+function fillRolesTableQuery() {
+
+    const roles = ['admin', 'user', 'visitor'];
+    return knex('roles').insert(roles.map(rolename => { return { rolename }}))
 
 }
 
