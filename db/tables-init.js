@@ -1,8 +1,12 @@
 const
     config = require('./internal/config'),
     mysqlConfig = config.get('mysql'),
-    knex = require('knex')({ client: 'mysql', connection: mysqlConfig}),
-    log = require('./internal/logger')(module);
+    log = require('./internal/logger')(module),
+    knex = require('knex')({
+        client: 'mysql',
+        connection: mysqlConfig,
+        debug: true
+    });
 
 for (arg of process.argv) log.info(arg);
 
@@ -10,33 +14,64 @@ if (!process.argv[2]) {
 
     log.warn(`specify tables you want to init, for example "node ./db/tables-init.js all"`);
 
-    exit();
+    delayExit();
 
 } else {
 
     const tablesNames = process.argv.slice(2);
 
-    let createTableQuerys = [];
+    let dropTableQueries = [];
+    let createTableQueries = [];
 
     if (tablesNames.includes('all')) {
-        createTableQuerys = createTableQuery('all');
+
+        dropTableQueries = dropTableQuery('all');
+        createTableQueries = createTableQuery('all');
+
     } else {
-        createTableQuerys = tablesNames.map(tableName => createTableQuery(tableName)).filter(query => query !== null);
+
+        dropTableQueries = tablesNames.map(tableName => dropTableQuery(tableName));
+        createTableQueries = tablesNames.map(tableName => createTableQuery(tableName)).filter(query => query !== null);
+
     }
 
-    Promise.all(createTableQuerys)
-        .then(log.info('tables created'))
-        .catch(err => { log.error(err) })
-        .then(exit());
+    let queriesPromise = new Promise(res => res());
+
+    const queryChaining = query => queriesPromise = queriesPromise.then(() => query);
+
+    dropTableQueries.forEach(queryChaining);
+    createTableQueries.forEach(queryChaining);
+
+    queriesPromise
+        .then(() => log.info('tables created'))
+        .catch(err => log.error(err.message))
+        .then(delayExit())
 
 }
 
 // functions
 
+function dropTableQuery(tableName) {
+
+    const tables = [
+        'users_roles',
+        'roles',
+        'users'
+    ];
+
+    if (tableName === 'all')
+        return tables.map(table => knex.schema.dropTableIfExists(table));
+
+    return knex.schema.dropTableIfExists(tableName)
+
+}
+
 function createTableQuery(tableName) {
 
     const queries = {
-        users: createUsersTableQuery
+        users: createUsersTableQuery,
+        roles: createRolesTableQuery,
+        users_roles: createUsersRolesTableQuery
     };
 
     if (tableName === 'all')
@@ -45,27 +80,61 @@ function createTableQuery(tableName) {
     if (Object.keys(queries).includes(tableName))
         return queries[tableName]();
 
-    return null;
+    return null
 
 }
 
 function createUsersTableQuery() {
 
-    const createUsersTableQuery =  knex.schema.createTable('users', table => {
+    return knex.schema.createTable('users', table => {
 
         table.increments('id');
         table.string('username').unique();
         table.string('hash');
-        table.string('role', 15);
         table.boolean('reauth').defaultTo(true);
 
         polishTable(table);
 
-    });
+    })
 
-    log.debug(createUsersTableQuery.toSQL());
+}
 
-    return createUsersTableQuery;
+function createRolesTableQuery() {
+
+    return knex.schema.createTable('roles', table => {
+
+        table.increments('id');
+        table.string('rolename').unique();
+
+        polishTable(table);
+
+    })
+
+}
+
+function createUsersRolesTableQuery() {
+
+    return knex.schema.createTable('users_roles', table => {
+
+        table.increments('id');
+
+        table.integer('roles_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('roles')
+            .onDelete('CASCADE');
+
+        table.integer('users_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('users')
+            .onDelete('CASCADE');
+
+        polishTable(table);
+
+    })
 
 }
 
@@ -77,6 +146,6 @@ function polishTable(table) {
 
 }
 
-function exit() {
+function delayExit() {
     setTimeout(() => { process.exit() }, 2000)
 }
