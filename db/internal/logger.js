@@ -13,7 +13,7 @@ function logger(module) {
 
     const dailyRotateFileLogger = new winston.transports.DailyRotateFile({
         timestamp: true,
-        dirname: `../../hbud.logs/${ process.env.appname }/`,
+        dirname: `../hbud.logs/${ process.env.appname }/`,
         filename: `${ process.env.appname }-%DATE%.log`,
         datePattern: 'YYYY-MM-DD',
         zippedArchive: false,
