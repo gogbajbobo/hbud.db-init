@@ -48,6 +48,9 @@ if (!process.argv[2]) {
     if (tablesNames.includes('accounttypes'))
         queriesPromise = queriesPromise.then(() => fillAccountTypesTableQuery());
 
+    if (tablesNames.includes('currencies'))
+        queriesPromise = queriesPromise.then(() => fillCurrenciesTableQuery());
+
     queriesPromise
         .then(() => log.info('tables created'))
         .catch(err => log.error(err.message))
@@ -65,7 +68,8 @@ function dropTableQuery(tableName) {
         'users',
         'accounttypes',
         'accounts',
-        'subaccounts'
+        'subaccounts',
+        'currencies'
     ];
 
     if (tableName === 'all')
@@ -83,7 +87,8 @@ function createTableQuery(tableName) {
         users_roles: createUsersRolesTableQuery,
         accounttypes: createAccountTypesTableQuery,
         accounts: createAccountsTableQuery,
-        subaccounts: createSubaccountTableQuery
+        subaccounts: createSubaccountTableQuery,
+        currencies: createCurrenciesTableQuery
     };
 
     if (tableName === 'all')
@@ -214,6 +219,27 @@ function createSubaccountTableQuery() {
         polishTable(table)
 
     })
+
+}
+
+function createCurrenciesTableQuery() {
+
+    return knex.schema.createTable('currencies', table => {
+
+        table.increments('id');
+        table.string('name').unique();
+        table.boolean('base');
+
+        polishTable(table)
+
+    });
+
+}
+
+function fillCurrenciesTableQuery() {
+
+    const currencies = ['RUB', 'EUR', 'USD'];
+    return knex('currencies').insert(currencies.map(name => ({ name, base: name === 'RUB' }) ))
 
 }
 
