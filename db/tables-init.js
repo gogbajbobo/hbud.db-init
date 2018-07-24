@@ -58,7 +58,10 @@ function dropTableQuery(tableName) {
     const tables = [
         'users_roles',
         'roles',
-        'users'
+        'users',
+        'accounttypes',
+        'accounts',
+        'subaccounts'
     ];
 
     if (tableName === 'all')
@@ -73,7 +76,10 @@ function createTableQuery(tableName) {
     const queries = {
         users: createUsersTableQuery,
         roles: createRolesTableQuery,
-        users_roles: createUsersRolesTableQuery
+        users_roles: createUsersRolesTableQuery,
+        accounttypes: createAccountTypesTableQuery,
+        accounts: createAccountsTableQuery,
+        subaccounts: createSubaccountTableQuery
     };
 
     if (tableName === 'all')
@@ -142,6 +148,66 @@ function createUsersRolesTableQuery() {
             .onDelete('CASCADE');
 
         polishTable(table);
+
+    })
+
+}
+
+function createAccountTypesTableQuery() {
+
+    return knex.schema.createTable('accounttypes', table => {
+
+        table.increments('id');
+        table.string('name').unique();
+
+        polishTable(table);
+
+    });
+
+}
+
+function fillAccountTypesTableQuery() {
+
+    const types = ['income', 'current', 'expense'];
+    return knex('accounttypes').insert(types.map(name => ({ name }) ))
+
+}
+
+function createAccountsTableQuery() {
+
+    return knex.schema.createTable('accounts', table => {
+
+        table.increments('id');
+        table.string('name').unique();
+
+        table.integer('type_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('accounttypes')
+            .onDelete('CASCADE');
+
+        polishTable(table)
+
+    })
+
+}
+
+function createSubaccountTableQuery() {
+
+    return knex.schema.createTable('subaccounts', table => {
+
+        table.increments('id');
+        table.string('name');
+
+        table.integer('account_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('accounts')
+            .onDelete('CASCADE');
+
+        polishTable(table)
 
     })
 
