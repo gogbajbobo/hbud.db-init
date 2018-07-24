@@ -123,7 +123,7 @@ function createRolesTableQuery() {
 function fillRolesTableQuery() {
 
     const roles = ['admin', 'user', 'visitor'];
-    return knex('roles').insert(roles.map(rolename => { return { rolename }}))
+    return knex('roles').insert(roles.map(rolename => ({ rolename }) ))
 
 }
 
@@ -217,7 +217,7 @@ function polishTable(table) {
 
     table.timestamps(false, true);
     table.charset('utf8');
-    table.collate('utf8_unicode_ci');
+    table.collate('utf8_unicode_ci')
 
 }
 
