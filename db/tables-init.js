@@ -42,7 +42,9 @@ if (!process.argv[2]) {
     dropTableQueries.forEach(queryChaining);
     createTableQueries.forEach(queryChaining);
 
-    queriesPromise = queriesPromise.then(() => fillRolesTableQuery());
+    if (tablesNames.includes('roles'))
+        queriesPromise = queriesPromise.then(() => fillRolesTableQuery());
+
 
     queriesPromise
         .then(() => log.info('tables created'))
