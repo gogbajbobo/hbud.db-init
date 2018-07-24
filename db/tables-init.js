@@ -69,7 +69,8 @@ function dropTableQuery(tableName) {
         'accounttypes',
         'accounts',
         'subaccounts',
-        'currencies'
+        'currencies',
+        'transactions'
     ];
 
     if (tableName === 'all')
@@ -88,7 +89,8 @@ function createTableQuery(tableName) {
         accounttypes: createAccountTypesTableQuery,
         accounts: createAccountsTableQuery,
         subaccounts: createSubaccountTableQuery,
-        currencies: createCurrenciesTableQuery
+        currencies: createCurrenciesTableQuery,
+        transactions: createTransactionsTableQuery
     };
 
     if (tableName === 'all')
@@ -240,6 +242,49 @@ function fillCurrenciesTableQuery() {
 
     const currencies = ['RUB', 'EUR', 'USD'];
     return knex('currencies').insert(currencies.map(name => ({ name, base: name === 'RUB' }) ))
+
+}
+
+function createTransactionsTableQuery() {
+
+    return knex.schema.createTable('transactions', table => {
+
+        table.increments('id');
+
+        table.integer('from_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('accounts')
+            .onDelete('CASCADE');
+
+        table.integer('to_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('accounts')
+            .onDelete('CASCADE');
+
+        table.integer('from_curr_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('currencies')
+            .onDelete('CASCADE');
+
+        table.integer('to_curr_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('currencies')
+            .onDelete('CASCADE');
+
+        table.decimal('from_value', 19, 4);
+        table.decimal('to_value', 19, 4);
+
+        polishTable(table)
+
+    })
 
 }
 
