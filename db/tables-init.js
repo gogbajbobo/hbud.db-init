@@ -45,6 +45,8 @@ if (!process.argv[2]) {
     if (tablesNames.includes('roles'))
         queriesPromise = queriesPromise.then(() => fillRolesTableQuery());
 
+    if (tablesNames.includes('accounttypes'))
+        queriesPromise = queriesPromise.then(() => fillAccountTypesTableQuery());
 
     queriesPromise
         .then(() => log.info('tables created'))
