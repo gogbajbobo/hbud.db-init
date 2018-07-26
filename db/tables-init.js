@@ -198,6 +198,13 @@ function createAccountsTableQuery() {
             .inTable('accounttypes')
             .onDelete('CASCADE');
 
+        table.integer('user_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('users')
+            .onDelete('CASCADE');
+
         polishTable(table)
 
     })
@@ -216,6 +223,13 @@ function createSubaccountTableQuery() {
             .notNullable()
             .references('id')
             .inTable('accounts')
+            .onDelete('CASCADE');
+
+        table.integer('user_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('users')
             .onDelete('CASCADE');
 
         polishTable(table)
@@ -250,6 +264,13 @@ function createTransactionsTableQuery() {
     return knex.schema.createTable('transactions', table => {
 
         table.increments('id');
+
+        table.integer('user_id')
+            .unsigned()
+            .notNullable()
+            .references('id')
+            .inTable('users')
+            .onDelete('CASCADE');
 
         table.integer('from_id')
             .unsigned()
