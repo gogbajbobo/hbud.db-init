@@ -189,7 +189,7 @@ function createAccountsTableQuery() {
     return knex.schema.createTable('accounts', table => {
 
         table.increments('id');
-        table.string('name').unique();
+        table.string('name');
 
         table.integer('type_id')
             .unsigned()
@@ -204,6 +204,8 @@ function createAccountsTableQuery() {
             .references('id')
             .inTable('users')
             .onDelete('CASCADE');
+
+        table.unique(['name', 'user_id']);
 
         polishTable(table)
 
@@ -231,6 +233,8 @@ function createSubaccountTableQuery() {
             .references('id')
             .inTable('users')
             .onDelete('CASCADE');
+
+        table.unique(['name', 'account_id', 'user_id']);
 
         polishTable(table)
 
