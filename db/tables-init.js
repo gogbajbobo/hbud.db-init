@@ -269,6 +269,8 @@ function createTransactionsTableQuery() {
 
         table.increments('id');
 
+        table.date('date').index();
+
         table.integer('user_id')
             .unsigned()
             .notNullable()
