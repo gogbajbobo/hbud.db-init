@@ -183,7 +183,7 @@ function createAccountsTableQuery() {
         table.integer('type_id').unsigned().notNullable().references('id').inTable('accounttypes').onDelete('CASCADE');
         table.integer('user_id').unsigned().notNullable().references('id').inTable('users').onDelete('CASCADE');
 
-        table.unique(['name', 'user_id']);
+        table.unique(['name', 'type_id', 'user_id']);
 
         polishTable(table)
 
