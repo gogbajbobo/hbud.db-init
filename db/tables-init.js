@@ -144,19 +144,8 @@ function createUsersRolesTableQuery() {
 
         table.increments('id');
 
-        table.integer('roles_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('roles')
-            .onDelete('CASCADE');
-
-        table.integer('users_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('users')
-            .onDelete('CASCADE');
+        table.integer('roles_id').unsigned().notNullable().references('id').inTable('roles').onDelete('CASCADE');
+        table.integer('users_id').unsigned().notNullable().references('id').inTable('users').onDelete('CASCADE');
 
         polishTable(table);
 
@@ -191,19 +180,8 @@ function createAccountsTableQuery() {
         table.increments('id');
         table.string('name');
 
-        table.integer('type_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('accounttypes')
-            .onDelete('CASCADE');
-
-        table.integer('user_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('users')
-            .onDelete('CASCADE');
+        table.integer('type_id').unsigned().notNullable().references('id').inTable('accounttypes').onDelete('CASCADE');
+        table.integer('user_id').unsigned().notNullable().references('id').inTable('users').onDelete('CASCADE');
 
         table.unique(['name', 'user_id']);
 
@@ -220,19 +198,8 @@ function createSubaccountTableQuery() {
         table.increments('id');
         table.string('name');
 
-        table.integer('account_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('accounts')
-            .onDelete('CASCADE');
-
-        table.integer('user_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('users')
-            .onDelete('CASCADE');
+        table.integer('account_id').unsigned().notNullable().references('id').inTable('accounts').onDelete('CASCADE');
+        table.integer('user_id').unsigned().notNullable().references('id').inTable('users').onDelete('CASCADE');
 
         table.unique(['name', 'account_id', 'user_id']);
 
@@ -271,40 +238,11 @@ function createTransactionsTableQuery() {
 
         table.date('date').index();
 
-        table.integer('user_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('users')
-            .onDelete('CASCADE');
-
-        table.integer('from_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('accounts')
-            .onDelete('CASCADE');
-
-        table.integer('to_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('accounts')
-            .onDelete('CASCADE');
-
-        table.integer('from_curr_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('currencies')
-            .onDelete('CASCADE');
-
-        table.integer('to_curr_id')
-            .unsigned()
-            .notNullable()
-            .references('id')
-            .inTable('currencies')
-            .onDelete('CASCADE');
+        table.integer('user_id').unsigned().notNullable().references('id').inTable('users').onDelete('CASCADE');
+        table.integer('from_id').unsigned().notNullable().references('id').inTable('accounts').onDelete('CASCADE');
+        table.integer('to_id').unsigned().notNullable().references('id').inTable('accounts').onDelete('CASCADE');
+        table.integer('from_curr_id').unsigned().notNullable().references('id').inTable('currencies').onDelete('CASCADE');
+        table.integer('to_curr_id').unsigned().notNullable().references('id').inTable('currencies').onDelete('CASCADE');
 
         table.decimal('from_value', 19, 4);
         table.decimal('to_value', 19, 4);
