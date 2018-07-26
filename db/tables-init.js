@@ -243,6 +243,8 @@ function createTransactionsTableQuery() {
         table.integer('to_id').unsigned().notNullable().references('id').inTable('accounts').onDelete('CASCADE');
         table.integer('from_curr_id').unsigned().notNullable().references('id').inTable('currencies').onDelete('CASCADE');
         table.integer('to_curr_id').unsigned().notNullable().references('id').inTable('currencies').onDelete('CASCADE');
+        table.integer('from_sub_id').unsigned().references('id').inTable('subaccounts').onDelete('SET NULL');
+        table.integer('to_sub_id').unsigned().references('id').inTable('subaccounts').onDelete('SET NULL');
 
         table.decimal('from_value', 19, 4);
         table.decimal('to_value', 19, 4);
